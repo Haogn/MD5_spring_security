@@ -7,12 +7,15 @@ import com.ra.entity.RoleName;
 import com.ra.entity.Roles;
 import com.ra.entity.Users;
 import com.ra.exception.CustomException;
+import com.ra.mapper.UserMapper;
 import com.ra.repository.IUserRepository;
 import com.ra.security.jwt.JwtProvider;
 import com.ra.security.user_principal.UserPrincipal;
 import com.ra.service.IRoleService;
 import com.ra.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,9 +44,12 @@ public class UserServiceIMPL implements IUserService {
     @Autowired
     private AuthenticationProvider authenticationProvider ;
 
+    @Autowired
+    private UserMapper userMapper ;
+
     // todo : register
     @Override
-    public Users register(UserRegister userRegister) throws CustomException {
+    public void register(UserRegister userRegister) throws CustomException {
         // Kiểm tra xem email đã tồn tại chưa
         if (userRepository.existsByEmail(userRegister.getEmail())) {
             throw new CustomException("Email exists");
@@ -73,7 +79,7 @@ public class UserServiceIMPL implements IUserService {
         }
 
 
-        return userRepository.save(Users.builder()
+         userRepository.save(Users.builder()
                         .email(userRegister.getEmail())
                         .userName(userRegister.getUserName())
                         .status(userRegister.getStatus())
@@ -102,4 +108,8 @@ public class UserServiceIMPL implements IUserService {
                 .roles(userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()))
                 .build();
     }
+
+
+
+
 }

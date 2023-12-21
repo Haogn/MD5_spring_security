@@ -19,7 +19,8 @@ public class AuthController {
     // todo : register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegister userRegister) throws CustomException {
-        return new ResponseEntity<>(userService.register(userRegister), HttpStatus.OK);
+        userService.register(userRegister);
+        return new ResponseEntity<>( HttpStatus.CREATED);
     }
 
     // todo : login
